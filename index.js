@@ -34,10 +34,10 @@ client.on('message', msg => {
 			.setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
 			.addField(`Prefix:`, `**${prefix}**`)
 			//Estaria bien poder poner la lista de comandos en mas de una linea para mas legibilidad del codigo pero no se hacerlo.
-			.addField('Commands','help -> Shows you this message.\nargs-info -> Debug tool to show input.\nping -> Replies with \'pong\'\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
+			.addField('Commands','help -> Shows you this message.\nargs-info -> Debug tool to show input.\nprune (number) -> deletes "number" messages.\nping -> Replies with \'pong\'.\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
 			.addField(`Invite link:`, `https://discord.com/oauth2/authorize?client_id=762431497390915584&scope=bot`, true)
 			.addField(`GitHub:`, `https://github.com/Divad666333/bot-mona`, true)
-			.setURL(`https://github.com/Divad666333/bot-mona`)
+			.setImage('https://media.giphy.com/media/z6TMaaNJKIAX6/giphy.gif')
 			.setFooter('I will gladly read your suggestions at: davidpablo@protonmail.com')
 			.setTimestamp();
 			msg.channel.send(embed);
@@ -49,10 +49,6 @@ client.on('message', msg => {
 	
 		case `user`:
 			if (msg.mentions.users.size) {	
-				
-				
-					//msg.channel.send(`\`\`\`diff\n- ${notUser} is not an user\`\`\``);													 
-	
 				msg.mentions.users.forEach(function(user) {
 					userEmbed(user);
 					msg.channel.send(embed);
@@ -61,7 +57,7 @@ client.on('message', msg => {
 				userEmbed(msg.author);
 				msg.channel.send(embed);
 			} else {
-				msg.channel.send(`\`\`\`diff\n- ${args[0]} is not an user\`\`\``);
+				msg.channel.send(`\`\`\`diff\n- ${args[0]} is not an user.\`\`\``);
 			}
 			break;
 	
@@ -79,6 +75,20 @@ client.on('message', msg => {
 			msg.channel.send(embed);
 			break;
 
+		case `prune`:
+			const amount = parseInt(args[0]) + 1;
+			if (isNaN(amount)) {
+				return msg.channel.send(`\`\`\`diff\n- ${args[0]} is not a valid number.\`\`\``);
+			} else if (amount <= 1 || amount > 100) {
+				return msg.channel.send(`\`\`\`diff\n- You need to imput a number between 1 and 99.\`\`\``);
+			}
+			
+			msg.channel.bulkDelete(amount, true).catch(err => {
+			//console.error(err);
+			msg.channel.send(`\`\`\`diff\n- There was an error trying to prune messages in this channel!\`\`\``);
+			});
+			break;
+			
 		case `callate`:
 			if (args.length) {
 				number = Number(args[0]);
@@ -130,11 +140,11 @@ client.on('message', msg => {
 					break;
 				
 				default:
-					msg.channel.send(`\`\`\`diff\n- ${number} out of scope\`\`\``);
+					msg.channel.send(`\`\`\`diff\n- ${number} is out of scope.\`\`\``);
 			}
  			break;
 		default:
-			msg.channel.send(`\`\`\`diff\n- ${command} is not a command\`\`\``);
+			msg.channel.send(`\`\`\`diff\n- ${command} is not a command.\`\`\``);
 	}
  });
 
