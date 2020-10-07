@@ -24,12 +24,28 @@ client.on('message', msg => {
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 	
-	if (!client.commands.has(commandName)) return msg.channel.send(`\`\`\`diff\n- ${commandName} is not a command!\`\`\``);;
+	const command = client.commands.get(commandName)
+		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+	if (!command) return;
 	
-	const command = client.commands.get(commandName);
-	
+	if (command.args && !args.length) {
+		let reply = `You didn't provide any arguments, ${msg.author}!`;
+		
+		if (command.usage) {
+			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+		}
+		
+		return msg.channel.send(reply);
+	}
+		
+		
 	try {
-		command.execute(msg, args);
+		if (args[0] === '--help') {
+			msg.channel.send(`${command.help}`);
+		} else {
+			command.execute(msg, args);
+		}
 	} catch (error) {
 		console.error(error);
 		msg.channel.send(`${msg.author}\n\`\`\`diff\n- There was an error trying to execute that command!\`\`\``);
