@@ -33,7 +33,7 @@ client.on('message', msg => {
 			.setTitle('Hi!, I\'m Mona')
 			.setColor(colorEmbed)
 			.setDescription(`Currently I can\'t do much but I\'m improving by the day!`)
-			.setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
+			.setThumbnail('<${https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
 			.addField(`Prefix`, `**${prefix}**`)
 			//Estaria bien poder poner la lista de comandos en mas de una linea para mas legibilidad del codigo pero no se hacerlo.
 			.addField('Commands','help -> Shows you this message.\nprune (number) -> deletes "number" messages.\nping -> Replies with \'pong\'.\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
