@@ -1,15 +1,13 @@
+
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, colorEmbed, token } = require('./config.json');
+const { prefix, token } = require('./config.json');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const { Client, MessageEmbed } = require('discord.js');
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-//const client = new Client();
-//console.log(client)
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -24,12 +22,14 @@ client.on('message', msg => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 	
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
-	const command = args.shift().toLowerCase();
+	const commandName = args.shift().toLowerCase();
 	
-	if (!client.commands.has(command)) return;
+	if (!client.commands.has(commandName)) return msg.channel.send(`\`\`\`diff\n- ${commandName} is not a command!\`\`\``);;
+	
+	const command = client.commands.get(commandName);
 	
 	try {
-		client.commands.get(command).execute(msg, args);	
+		command.execute(msg, args);
 	} catch (error) {
 		console.error(error);
 		msg.channel.send(`${msg.author}\n\`\`\`diff\n- There was an error trying to execute that command!\`\`\``);
@@ -39,13 +39,6 @@ client.on('message', msg => {
 	/*
 	
 	switch (command) {
-			
-		case `args-info`:
-			if (!args.length) {
-				return msg.channel.send(`\`\`\`diff\n- You didn\'t provide any arguments!\`\`\``);
-			}
-			msg.channel.send(`\`\`\`\nCommand name: ${command}\nArguments: ${args}\`\`\``);
-			break;
 	
 		case `help`:
 			embed = new Discord.MessageEmbed()
@@ -64,133 +57,12 @@ client.on('message', msg => {
 			.setTimestamp();
 			msg.channel.send(embed);
 			break;
-	
-		case `color-palette`:
-			msg.channel.send(`https://camo.githubusercontent.com/317c467f5ba02f5009800bb4f45613c0d2ff137a/68747470733a2f2f692e696d6775722e636f6d2f4e4535696c324f672e6a7067`);
-			break;
 			
-		case `ping`:	//DONE
- 			client.commands.get('ping').execute(msg, args);
-			break;
-	
-		case `user`:
-			if (msg.mentions.users.size) {	
-				msg.mentions.users.forEach(function(user) {
-					userEmbed(user);
-					msg.channel.send(embed);
-				});		
-			} else if (!args.length){
-				userEmbed(msg.author);
-				msg.channel.send(embed);
-			} else {
-				msg.channel.send(`\`\`\`diff\n- ${args[0]} is not an user.\`\`\``);
-			}
-			break;
-	
-		case `server`:
-			embed = new Discord.MessageEmbed()
-			.setTitle(`${msg.guild.name} info:`)
-			.setColor(colorEmbed)
-			.setThumbnail(`${msg.guild.iconURL()}`)
-			.addField(`Member count`,`All: ${msg.guild.memberCount}\nHumans: ${msg.guild.members.cache.filter(member => !member.user.bot).size}\nBots: ${msg.guild.members.cache.filter(member => member.user.bot).size}`, true)
-			.addField(`Member stattus`, `Online: ${msg.guild.members.cache.filter(member => member.presence.status === 'online' && !member.user.bot).size}\nIdle: ${msg.guild.members.cache.filter(member => member.presence.status === 'idle' && !member.user.bot).size}\nOffline: ${msg.guild.members.cache.filter(member => member.presence.status === 'offline' && !member.user.bot).size}`, true)
-			.addField(`Maximum members`,`${msg.guild.maximumMembers}`, true)
-			.addField(`Creation date`, `${msg.guild.createdAt}`, true)
-			.addField(`Region`, `${msg.guild.region}`, true)
-			.setTimestamp();
-			msg.channel.send(embed);
-			break;
-
-		case `prune`:
-			const amount = parseInt(args[0]) + 1;
-			if (isNaN(amount)) {
-				return msg.channel.send(`\`\`\`diff\n- ${args[0]} is not a valid number.\`\`\``);
-			} else if (amount <= 1 || amount > 100) {
-				return msg.channel.send(`\`\`\`diff\n- You need to imput a number between 1 and 99.\`\`\``);
-			}
-			
-			msg.channel.bulkDelete(amount, true).catch(err => {
-			//console.error(err);
-			msg.channel.send(`\`\`\`diff\n- There was an error trying to prune messages in this channel!\`\`\``);
-			});
-			break;
-			
-		case `callate`:
-			if (args.length) {
-				number = Number(args[0]);
-			} else {
-				number = getRandomInt(1, 10);
-			}
-			
-			switch (number) {
-				case 1:		//No sirves para nada
-					msg.reply('no sirves para nada');
-					break;
-					
-				case 2:		//A las 5 en el pirulo
-					msg.channel.send(`A las 5 en el pirulo ${msg.author.username}.`);
-					break;
-					
-				case 3:		//Deal with it
-					msg.channel.send('https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.pngmart.com%2Ffiles%2F1%2FDeal-With-It-Sunglass-Transparent-Background.png&f=1&nofb=1');
-					break;
-									
-				case 4:		//Try me
-					msg.channel.send('https://cdn.shopify.com/s/files/1/0355/8941/products/GO_AHEAD_TRY_ME.png?v=1392232268');
-					break;
-					
-				case 5:		//Tu primero
-					msg.reply(`tu primero`);
-					break;
-				
-				case 6:		//Crying wojak
-					msg.channel.send('https://i0.kym-cdn.com/entries/icons/original/000/024/207/brainlettttt.jpg');
-					msg.channel.send(`${msg.author} you rn.`);
-					break;
-					
-				case 7:		//k
-					msg.channel.send(`k`);
-					break;
-				
-				case 8:		//Punching wojak
-					msg.channel.send(`${msg.author}`);
-					msg.channel.send('https://www.vippng.com/png/detail/403-4032083_view-1479850296243-wojak-gif.png');
-					break;
-				
-				case 9:		//Ahora mismo campeon
-					msg.channel.send(`Ahora mismo campeon.`);
-					break;
-					
-				case 10:	//Why? Are you offended 'username'? / Go fkn cry
-					msg.channel.send(`Why? Are you offended ${msg.author.username}?\n**Go fkn cry**`);
-					break;
-				
-				default:
-					msg.channel.send(`\`\`\`diff\n- ${number} is out of scope.\`\`\``);
-			}
- 			break;
 		default:
 			msg.channel.send(`\`\`\`diff\n- ${command} is not a command.\`\`\``);
 	}
  });
 
-function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive 
-}
-
-function userEmbed(user) {
-	embed = new Discord.MessageEmbed()
-	.setTitle(`${user.username} information:`)
-	.setColor(colorEmbed)
-	.setThumbnail(`${user.displayAvatarURL()}`)
-	.addField(`Created`, `${user.createdAt}`, true)
-	//Aqui se podria poner que dijera tambien los roles del usuario y si es admin pero tampoco se como hacerlo.
-	.addField(`Tag`, `${user.tag}`, true)
-	.addField(`ID`, `${user.id}`, true)
-	.setTimestamp();
-}
 */
 
 client.login(token);
