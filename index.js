@@ -6,6 +6,8 @@ const client = new Discord.Client();
 //const client = new Client();
 //console.log(client)
 
+const colorEmbed = `#F93A2F`;
+
 client.on('ready', () => {
  console.log(`Logged in as ${client.user.tag}!`);
  });
@@ -21,28 +23,33 @@ client.on('message', msg => {
 			
 		case `args-info`:
 			if (!args.length) {
-				return msg.channel.send(`You didn't provide any arguments, ${msg.author}!`);
+				return msg.channel.send(`\`\`\`diff\n- You didn\'t provide any arguments!\`\`\``);
 			}
-			msg.channel.send(`Command name: ${command}\nArguments: ${args}`);
+			msg.channel.send(`\`\`\`\nCommand name: ${command}\nArguments: ${args}\`\`\``);
 			break;
 	
 		case `help`:
 			embed = new Discord.MessageEmbed()
 			.setTitle('Hi!, I\'m Mona')
-			.setColor('#0099ff')	//Blue
+			.setColor(colorEmbed)
 			.setDescription(`Currently I can\'t do much but I\'m improving by the day!`)
 			.setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
-			.addField(`Prefix:`, `**${prefix}**`)
+			.addField(`Prefix`, `**${prefix}**`)
 			//Estaria bien poder poner la lista de comandos en mas de una linea para mas legibilidad del codigo pero no se hacerlo.
-			.addField('Commands','help -> Shows you this message.\nargs-info -> Debug tool to show input.\nprune (number) -> deletes "number" messages.\nping -> Replies with \'pong\'.\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
-			.addField(`Invite link:`, `https://discord.com/oauth2/authorize?client_id=762431497390915584&scope=bot`, true)
-			.addField(`GitHub:`, `https://github.com/Divad666333/bot-mona`, true)
+			.addField('Commands','help -> Shows you this message.\nprune (number) -> deletes "number" messages.\nping -> Replies with \'pong\'.\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
+			.addField(`Dev. tools`, `args-info -> Shows arguments passed.\ncolor-palette -> Ref. of available discord colors.`)
+			.addField(`Invite link`, `https://discord.com/oauth2/authorize?client_id=762431497390915584&scope=bot`, true)
+			.addField(`GitHub`, `https://github.com/Divad666333/bot-mona`, true)
 			.setImage('https://media.giphy.com/media/z6TMaaNJKIAX6/giphy.gif')
 			.setFooter('I will gladly read your suggestions at: davidpablo@protonmail.com')
 			.setTimestamp();
 			msg.channel.send(embed);
 			break;
 	
+		case `color-palette`:
+			msg.channel.send(`https://camo.githubusercontent.com/317c467f5ba02f5009800bb4f45613c0d2ff137a/68747470733a2f2f692e696d6775722e636f6d2f4e4535696c324f672e6a7067`);
+			break;
+			
 		case `ping`:
  			msg.channel.send('pong');
 			break;
@@ -64,13 +71,13 @@ client.on('message', msg => {
 		case `server`:
 			embed = new Discord.MessageEmbed()
 			.setTitle(`${msg.guild.name} info:`)
-			.setColor('#0099ff')	//Blue
+			.setColor(colorEmbed)
 			.setThumbnail(`${msg.guild.iconURL()}`)
-			.addField(`Member count:`,`All: ${msg.guild.memberCount}\nHumans: ${msg.guild.members.cache.filter(member => !member.user.bot).size}\nBots: ${msg.guild.members.cache.filter(member => member.user.bot).size}`, true)
-			.addField(`Member stattus:`, `Online: ${msg.guild.members.cache.filter(member => member.presence.status === 'online' && !member.user.bot).size}\nIdle: ${msg.guild.members.cache.filter(member => member.presence.status === 'idle' && !member.user.bot).size}\nOffline: ${msg.guild.members.cache.filter(member => member.presence.status === 'offline' && !member.user.bot).size}`, true)
-			.addField(`Maximum members:`,`${msg.guild.maximumMembers}`, true)
-			.addField(`Creation date:`, `${msg.guild.createdAt}`, true)
-			.addField(`Region:`, `${msg.guild.region}`, true)
+			.addField(`Member count`,`All: ${msg.guild.memberCount}\nHumans: ${msg.guild.members.cache.filter(member => !member.user.bot).size}\nBots: ${msg.guild.members.cache.filter(member => member.user.bot).size}`, true)
+			.addField(`Member stattus`, `Online: ${msg.guild.members.cache.filter(member => member.presence.status === 'online' && !member.user.bot).size}\nIdle: ${msg.guild.members.cache.filter(member => member.presence.status === 'idle' && !member.user.bot).size}\nOffline: ${msg.guild.members.cache.filter(member => member.presence.status === 'offline' && !member.user.bot).size}`, true)
+			.addField(`Maximum members`,`${msg.guild.maximumMembers}`, true)
+			.addField(`Creation date`, `${msg.guild.createdAt}`, true)
+			.addField(`Region`, `${msg.guild.region}`, true)
 			.setTimestamp();
 			msg.channel.send(embed);
 			break;
@@ -157,11 +164,11 @@ function getRandomInt(min, max) {
 function userEmbed(user) {
 	embed = new Discord.MessageEmbed()
 	.setTitle(`${user.username} information:`)
-	.setColor('#0099ff')	//Blue
+	.setColor(colorEmbed)
 	.setThumbnail(`${user.displayAvatarURL()}`)
-	.addField(`Created:`, `${user.createdAt}`, true)
+	.addField(`Created`, `${user.createdAt}`, true)
 	//Aqui se podria poner que dijera tambien los roles del usuario y si es admin pero tampoco se como hacerlo.
-	.addField(`Tag:`, `${user.tag}`, true)
-	.addField(`ID:`, `${user.id}`, true)
+	.addField(`Tag`, `${user.tag}`, true)
+	.addField(`ID`, `${user.id}`, true)
 	.setTimestamp();
 }
