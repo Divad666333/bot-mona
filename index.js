@@ -1,23 +1,42 @@
-const { prefix, token } = require('./config.json');
-
+const fs = require('fs');
 const Discord = require('discord.js');
-const { Client, MessageEmbed } = require('discord.js');
+const { prefix, colorEmbed, token } = require('./config.json');
+
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
+const { Client, MessageEmbed } = require('discord.js');
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
 //const client = new Client();
 //console.log(client)
 
-const colorEmbed = `#F93A2F`;
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
 
 client.on('ready', () => {
  console.log(`Logged in as ${client.user.tag}!`);
  });
 
-client.login(token);
-
 client.on('message', msg => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+	
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
+	
+	if (!client.commands.has(command)) return;
+	
+	try {
+		client.commands.get(command).execute(msg, args);	
+	} catch (error) {
+		console.error(error);
+		msg.channel.send(`${msg.author}\n\`\`\`diff\n- There was an error trying to execute that command!\`\`\``);
+	}
+});
+	
+	/*
 	
 	switch (command) {
 			
@@ -33,7 +52,7 @@ client.on('message', msg => {
 			.setTitle('Hi!, I\'m Mona')
 			.setColor(colorEmbed)
 			.setDescription(`Currently I can\'t do much but I\'m improving by the day!`)
-			.setThumbnail('<${https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
+			.setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fmegamitensei%2Fimages%2F6%2F68%2FP5_Morgana_character_artwork.png%2Frevision%2Flatest%3Fcb%3D20160505181742&f=1&nofb=1')
 			.addField(`Prefix`, `**${prefix}**`)
 			//Estaria bien poder poner la lista de comandos en mas de una linea para mas legibilidad del codigo pero no se hacerlo.
 			.addField('Commands','help -> Shows you this message.\nprune (number) -> deletes "number" messages.\nping -> Replies with \'pong\'.\nuser (@User [optional]) -> User information.\nserver -> Server and members information.')
@@ -50,8 +69,8 @@ client.on('message', msg => {
 			msg.channel.send(`https://camo.githubusercontent.com/317c467f5ba02f5009800bb4f45613c0d2ff137a/68747470733a2f2f692e696d6775722e636f6d2f4e4535696c324f672e6a7067`);
 			break;
 			
-		case `ping`:
- 			msg.channel.send('pong');
+		case `ping`:	//DONE
+ 			client.commands.get('ping').execute(msg, args);
 			break;
 	
 		case `user`:
@@ -172,3 +191,7 @@ function userEmbed(user) {
 	.addField(`ID`, `${user.id}`, true)
 	.setTimestamp();
 }
+*/
+
+client.login(token);
+		  
