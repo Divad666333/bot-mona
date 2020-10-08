@@ -27,19 +27,17 @@ client.on('message', msg => {
 	const command = client.commands.get(commandName)
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-	if (!command) return;
+	if (!command) return msg.reply(`\`${prefix}${commandName}\` is not a command`);	
 	
 	if (command.guildOnly && msg.channel.type === 'dm') return msg.reply('I can\'t execute that command inside DMs!');
 
-	
 	if (command.args && !args.length) {
 		let reply = `You didn't provide any arguments, ${msg.author}!`;
 		
 		if (command.usage) reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
 		
 		return msg.channel.send(reply);
-	}
-		
+	}	
 		
 	try {
 		if (args[0] === '--help' || args[0] === '-h') {
