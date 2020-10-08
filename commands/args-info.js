@@ -3,6 +3,7 @@
 
 module.exports = {
 	name: 'args-info',
+	aliases: ['argsinfo', 'arg-info', 'arginfo'],
 	description: 'Returns arguments passed.',
 	args: true,
 	execute (msg, args) {

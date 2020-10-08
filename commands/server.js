@@ -6,6 +6,7 @@ module.exports = {
 	name: 'server',
 	aliases: ['serverinfo', 'server-info'],
 	description: 'Server and members information.',
+	guildOnly: true,
 	execute (msg) {
 		embed = new Discord.MessageEmbed()
 		.setTitle(`${msg.guild.name} info:`)
