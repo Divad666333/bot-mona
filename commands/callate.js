@@ -1,7 +1,9 @@
 
 module.exports = {
 	name: 'callate',
+	aliases: ['shut-up', 'shutup', 'muerete'],
 	description: 'He dosn\'t like this.',
+	help: 'You can pass a number to select an answer, if you don\'t provide arguments a random answer will be selected.',
 	execute (msg, args) {
 		if (args.length) {
 			number = Number(args[0]);

@@ -42,7 +42,20 @@ client.on('message', msg => {
 		
 	try {
 		if (args[0] === '--help') {
-			msg.channel.send(`${command.help}`);
+			
+			if (!command.description && !command.help && !command.aliases){
+				return msg.channel.send(`This command has no help`);
+			} else {
+				if (command.description) {
+					msg.channel.send(`${command.description}`);
+				}
+				if (command.help) {
+					msg.channel.send(`${command.help}`);
+				}
+				if (command.aliases) {
+					msg.channel.send(`\`Name: ${command.name}\`\n\`Aliases: ${command.aliases}\``);
+				}
+			}
 		} else {
 			command.execute(msg, args);
 		}

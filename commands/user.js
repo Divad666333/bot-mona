@@ -5,7 +5,9 @@ const { colorEmbed } = require('../config.json');
 
 module.exports = {
 	name: 'user',
+	aliases: ['users'],
 	description: 'User information.',
+	help: 'If no user is provided you will get your own information, you can pass as many users as you want',
 	execute (msg, args) {
 		if (msg.mentions.users.size) {	
 			msg.mentions.users.forEach(function(user) {

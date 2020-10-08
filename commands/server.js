@@ -4,6 +4,7 @@ const {colorEmbed} = require('../config.json');
 
 module.exports = {
 	name: 'server',
+	aliases: ['serverinfo', 'server-info'],
 	description: 'Server and members information.',
 	execute (msg) {
 		embed = new Discord.MessageEmbed()
