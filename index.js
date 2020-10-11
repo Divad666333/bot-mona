@@ -1,7 +1,7 @@
 
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
+const { prefix, token, colorEmbed } = require('./config.json');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -20,6 +20,8 @@ client.on('ready', () => {
 
 client.on('message', msg => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+	
+	msg.channel.bulkDelete(1);
 	
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -41,9 +43,21 @@ client.on('message', msg => {
 		
 	try {
 		if (args[0] === '--help' || args[0] === '-h') {
-			msg.channel.send(`${command.description}`);
-			if (command.help) msg.channel.send(`${command.help}`);
-			if (command.aliases) msg.channel.send(`\`Name: ${command.name}\`\n\`Aliases: ${command.aliases}\``);
+			embed = new Discord.MessageEmbed()
+			.setTitle(`${command.name} help`)
+			.setColor(colorEmbed)
+			.setTimestamp()
+			.setDescription(`${command.description}`)
+			if (command.help) embed.addField(`Help`, `${command.help}`)
+			if (command.usage) embed.addField(`Usage`, `${prefix}${command.name} ${command.usage}`)
+			if (command.aliases) embed.addField(`Aliases`, `${command.aliases.join(" | ")}`)
+			msg.channel.send(embed);
+			
+			
+			//msg.channel.send(`${command.description}`);
+			//if (command.help) msg.channel.send(`${command.help}`);
+			//if (command.usage) msg.channel.send(`${prefix}${command.name} ${command.usage}`);
+			//if (command.aliases) msg.channel.send(`\`Name: ${command.name}\`\n\`Aliases: ${command.aliases}\``);
 		} else command.execute(msg, args);
 	} catch (error) {
 		console.error(error);
