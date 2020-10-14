@@ -1,7 +1,7 @@
 
 module.exports = {
 	name: 'prune',
-	aliases: ['delete', 'erase', 'clean'],
+	aliases: ['delete', 'erase', 'clean', 'clear'],
 	description: 'Deletes "number" messages.',
 	help: 'Give a number between 1 and 100 and that number of previous messages will be deleted (your current message is automatically eliminated).',
 	args: true,
