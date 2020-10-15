@@ -21,17 +21,18 @@ client.on('ready', () => {
 client.on('message', msg => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 	
-	msg.channel.bulkDelete(1);
-	
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 	
 	const command = client.commands.get(commandName)
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+	
+	if (msg.channel.type != 'dm') msg.channel.bulkDelete(1);
 
 	if (!command) return msg.reply(`\`${prefix}${commandName}\` is not a command`);	
 	
 	if (command.guildOnly && msg.channel.type === 'dm') return msg.reply('I can\'t execute that command inside DMs!');
+	
 
 	if (command.args && !args.length) {
 		let reply = `You didn't provide any arguments, ${msg.author}!`;

@@ -6,6 +6,7 @@ module.exports = {
 	help: 'Give a number between 1 and 100 and that number of previous messages will be deleted (your current message is automatically eliminated).',
 	args: true,
 	usage: '<number of mesages>',
+	guildOnly: true,
 	execute (msg, args) {
 		const amount = parseInt(args[0]) + 1;
 		if (isNaN(amount)) {
